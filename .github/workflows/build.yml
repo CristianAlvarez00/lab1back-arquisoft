@@ -1,0 +1,127 @@
+name: CI Pipeline - Build, Test & SonarCloud
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - test
+  pull_request:
+    branches:
+      - main
+      - develop
+      - test
+
+jobs:
+  # ──────────────────────────────────────────────────────────
+  # JOB 1: Build & Tests
+  # ──────────────────────────────────────────────────────────
+  tests:
+    name: Build & Unit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Necesario para SonarCloud y JaCoCo
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Show Java version
+        run: java -version
+
+      - name: Show Maven version
+        run: mvn -version
+
+      - name: Build and run tests with coverage
+        run: mvn -B clean verify --file pom.xml
+
+      - name: Upload JaCoCo coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: target/*.jar
+
+  # ──────────────────────────────────────────────────────────
+  # JOB 2: SonarCloud Analysis (depende de tests)
+  # ──────────────────────────────────────────────────────────
+  sonar:
+    name: SonarCloud Analysis
+    needs: tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Necesario para análisis de historial de SonarCloud
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build project and generate coverage
+        run: mvn -B clean verify --file pom.xml
+
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          mvn -B
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+
+  # ──────────────────────────────────────────────────────────
+  # JOB 3: Docker Build & Push (solo en main y develop)
+  # ──────────────────────────────────────────────────────────
+  docker:
+    name: Docker Build & Push
+    needs: sonar
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: target/
+
+      - name: Build & Push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ${{ secrets.DOCKER_USERNAME }}/lab1back-arquisoft
+          tags: latest,${{ github.sha }}
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
