@@ -3,6 +3,13 @@
 [![CI/CD Pipeline](https://github.com/CristianAlvarez00/lab1back-arquisoft/actions/workflows/build.yml/badge.svg)](https://github.com/CristianAlvarez00/lab1back-arquisoft/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=coverage)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
+[![Maintainability Issues](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=CristianAlvarez00_lab1back-arquisoft&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=CristianAlvarez00_lab1back-arquisoft)
 [![Known Vulnerabilities](https://snyk.io/test/github/CristianAlvarez00/lab1back-arquisoft/badge.svg)](https://snyk.io/test/github/CristianAlvarez00/lab1back-arquisoft)
 [![Docker Hub](https://img.shields.io/docker/pulls/cristianalvarez00/lab1back-arquisoft?label=Docker%20Hub)](https://hub.docker.com/r/cristianalvarez00/lab1back-arquisoft)
 
