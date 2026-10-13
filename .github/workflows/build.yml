@@ -1,4 +1,4 @@
-name: CI Pipeline - Build, Test & SonarCloud
+name: CI Pipeline - Build, Test, SonarCloud & Deploy
 
 on:
   push:
@@ -6,11 +6,13 @@ on:
       - main
       - develop
       - test
+      - 'feature/**'
   pull_request:
     branches:
       - main
       - develop
       - test
+      - 'feature/**'
 
 jobs:
   # ──────────────────────────────────────────────────────────
@@ -125,3 +127,21 @@ jobs:
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+  # ──────────────────────────────────────────────────────────
+  # JOB 4: Deploy to Render (solo en main)
+  # Render detecta el nuevo tag de Docker Hub y redespliega
+  # el servicio automáticamente vía Deploy Hook (webhook).
+  # ──────────────────────────────────────────────────────────
+  deploy-render:
+    name: Deploy to Render
+    needs: docker
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl --silent --show-error --fail \
+            "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          echo "✅ Deploy hook triggered successfully"
